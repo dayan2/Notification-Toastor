@@ -1,0 +1,134 @@
+﻿@model Notifications_Toastr.Models.Customer
+@{
+    ViewBag.Title = "Home Page";
+    <link href="~/Content/toastr.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/toastr.js"></script>
+}
+
+
+
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { @id = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Customer</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Age, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <input type="hidden" value="@Model" id="model">
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" id="submit" />
+            </div>
+        </div>
+    </div>
+
+}
+
+
+
+@section Scripts {
+
+    @*Steps to :*@
+    @*1 - install toastr nuget....
+    2 - Go to this site - http://codeseven.github.io/toastr/demo.html
+    3 - copy and paste da code
+        4 - drag and drop the script references*@
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#notificationSuccess').hide();
+            $('#notificationError').hide();
+            $('#submit').click(function () {
+
+                var jsonObj = $('#form').serialize();
+                alert(jsonObj);
+
+                $.ajax({
+                    type: "POST",
+                    url: "../Home/Index",
+                    data: JSON.stringify({ "cus": jsonObj}),
+                    success: function(data){
+                        alert(data + "done");
+                        //$('#submit').hide();
+                        if (data == "Success") {
+                            //toastr.optionsOverride = 'positionclass:toast-bottom-full-width';
+                            // show when the button is clicked
+                            //toastr.success('Success', 'You have successfully inserted your record!',
+                            //    'positionclass:toast-bottom-full-width');
+
+
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": true,
+                                "progressBar": true,
+                                "positionClass": "toast-top-full-width",
+                                "preventDuplicates": true,
+                                "onclick": null,
+                                "showDuration": "5000",
+                                "hideDuration": "5000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "5000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            }
+                            toastr["success"]("You have successfully inserted your record!", "Success!!");
+
+                        }
+                        else {
+
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": true,
+                                "progressBar": true,
+                                "positionClass": "toast-top-full-width",
+                                "preventDuplicates": true,
+                                "onclick": null,
+                                "showDuration": "5000",
+                                "hideDuration": "5000",
+                                "timeOut": "5000",
+                                "extendedTimeOut": "5000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            }
+                            toastr["error"]("Please try again!!", "Error!!");
+                        }
+
+                    },
+                    error:function(){
+                        alert("Error!!!!");
+                    }
+                });
+                return false;
+            });
+        });
+
+    </script>
+}
